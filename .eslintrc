@@ -1,0 +1,44 @@
+{
+    "parser": "@typescript-eslint/parser",
+    "plugins": ["@typescript-eslint"],
+    "settings": {
+      "import/resolver": {
+        "node": {
+          "extensions": [".js", ".jsx", ".ts", ".tsx"]
+        }
+      }
+    },
+    "extends": "packt-base",
+    "rules": {
+      "padding-line-between-statements": [
+        "error",
+        {
+          "blankLine": "always",
+          "prev": ["block", "block-like", "cjs-export", "class", "export", "import"],
+          "next": "*"
+        },
+        {
+          "blankLine": "any",
+          "prev": ["export", "import"],
+          "next": ["export", "import"]
+        }
+      ],
+      "lines-between-class-members": ["error", "always", { "exceptAfterSingleLine": true }],
+      "require-jsdoc": ["error", {
+        "require": {
+          "FunctionDeclaration": true,
+          "MethodDefinition": true,
+          "ClassDeclaration": true,
+          "ArrowFunctionExpression": true,
+          "FunctionExpression": true
+        }
+      }],
+      "implicit-arrow-linebreak": 0,
+      "operator-linebreak": ["error", "after", {
+        "overrides": {
+          "?": "before",
+          ":": "before"
+        }
+      }]
+    }
+  }

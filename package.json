@@ -1,0 +1,61 @@
+{
+  "name": "@packt/logger",
+  "version": "0.0.0",
+  "description": "Logging helper using winston",
+  "main": "dist/index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "lint": "eslint ./src/**/*.*s",
+    "lint:fix": "eslint ./src/**/*.*s ./tests/**/*.*s --fix",
+    "build": "tsc",
+    "prepublishOnly": "npm run test && npm run build"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/PacktDev/logger-nodejs.git"
+  },
+  "keywords": [
+    "logging",
+    "winston"
+  ],
+  "engines": {
+    "node": ">=8.10"
+  },
+  "author": {
+    "name": "Packt Publishing Ltd",
+    "url": "https://www.packtpub.com/"
+  },
+  "contributors": [
+    {
+      "name": "Mike Elsmore",
+      "email": "mikee@packt.com"
+    },
+    {
+      "name": "Chris Key",
+      "email": "chrisk@packt.com"
+    }
+  ],
+  "license": "Apache-2.0",
+  "bugs": {
+    "url": "https://github.com/PacktDev/logger-nodejs/issues"
+  },
+  "homepage": "https://github.com/PacktDev/logger-nodejs#readme",
+  "dependencies": {
+    "@elastic/elasticsearch": "^7.5.0",
+    "debug": "^4.1.1",
+    "logform": "^2.1.2",
+    "winston": "^3.2.1",
+    "winston-elasticsearch": "^0.8.3"
+  },
+  "devDependencies": {
+    "@types/debug": "^4.1.5",
+    "@types/node": "^13.1.7",
+    "@typescript-eslint/eslint-plugin": "^2.16.0",
+    "@typescript-eslint/parser": "^2.16.0",
+    "eslint": "^6.8.0",
+    "eslint-config-packt-base": "0.0.1",
+    "eslint-plugin-import": "^2.20.0",
+    "ts-node": "^8.6.2",
+    "typescript": "^3.7.4"
+  }
+}
