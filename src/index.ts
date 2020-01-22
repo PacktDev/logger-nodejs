@@ -127,14 +127,6 @@ export default class {
     }
 
     /**
-     * Helpful wrapper for log severity
-     * @param content
-     */
-    public log(...content: any): void {
-      return this.logger('LOG', content);
-    }
-
-    /**
      * Helpful wrapper for info severity
      * @param content
      */

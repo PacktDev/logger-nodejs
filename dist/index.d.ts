@@ -32,11 +32,6 @@ export default class {
      */
     debug(...content: any): void;
     /**
-     * Helpful wrapper for log severity
-     * @param content
-     */
-    log(...content: any): void;
-    /**
      * Helpful wrapper for info severity
      * @param content
      */

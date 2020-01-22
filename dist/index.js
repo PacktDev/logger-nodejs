@@ -114,17 +114,6 @@ var default_1 = /** @class */ (function () {
         return this.logger('DEBUG', content);
     };
     /**
-     * Helpful wrapper for log severity
-     * @param content
-     */
-    default_1.prototype.log = function () {
-        var content = [];
-        for (var _i = 0; _i < arguments.length; _i++) {
-            content[_i] = arguments[_i];
-        }
-        return this.logger('LOG', content);
-    };
-    /**
      * Helpful wrapper for info severity
      * @param content
      */
