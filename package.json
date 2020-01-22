@@ -4,7 +4,7 @@
   "description": "Logging helper using winston",
   "main": "dist/index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "nyc mocha --require ts-node/register --require source-map-support/register --recursive 'tests/**/*.*s' --exit",
     "lint": "eslint ./src/**/*.*s",
     "lint:fix": "eslint ./src/**/*.*s ./tests/**/*.*s --fix",
     "build": "tsc",
@@ -42,8 +42,15 @@
   "homepage": "https://github.com/PacktDev/logger-nodejs#readme",
   "dependencies": {
     "@elastic/elasticsearch": "^7.5.0",
+    "@types/mocha": "^5.2.7",
+    "chai": "^4.2.0",
     "debug": "^4.1.1",
     "logform": "^2.1.2",
+    "mocha": "^6.2.0",
+    "nyc": "^14.1.1",
+    "sinon": "^8.1.0",
+    "source-map-support": "^0.5.12",
+    "uuid": "^3.4.0",
     "winston": "^3.2.1",
     "winston-elasticsearch": "^0.8.3"
   },
@@ -53,9 +60,32 @@
     "@typescript-eslint/eslint-plugin": "^2.16.0",
     "@typescript-eslint/parser": "^2.16.0",
     "eslint": "^6.8.0",
-    "eslint-config-packt-base": "0.0.1",
+    "eslint-config-packt-base": "^0.0.1",
     "eslint-plugin-import": "^2.20.0",
     "ts-node": "^8.6.2",
     "typescript": "^3.7.4"
+  },
+  "nyc": {
+    "check-coverage": true,
+    "sourceMap": true,
+    "instrument": true,
+    "lines": 98,
+    "statements": 98,
+    "functions": 98,
+    "branches": 98,
+    "extension": [
+      ".ts"
+    ],
+    "include": [
+      "src/**/*.ts"
+    ],
+    "exclude": [
+      "**/*.d.ts"
+    ],
+    "reporter": [
+      "lcov",
+      "html"
+    ],
+    "all": true
   }
 }

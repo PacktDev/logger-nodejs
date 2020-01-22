@@ -4,6 +4,7 @@ import Elasticsearch from 'winston-elasticsearch';
 import { Client } from '@elastic/elasticsearch';
 import Debug from 'debug';
 import { format } from 'logform';
+import uuid from 'uuid';
 import { IConfig } from './interfaces/config';
 /**
  * Logger Class
@@ -24,6 +25,10 @@ export default class {
       this.debugInstance = {};
       this.invocationId = config.invocationId;
 
+      if (!this.invocationId) {
+        this.invocationId = uuid();
+      }
+
       const transports = [];
 
       const consoleTransport = new winston.transports.Console();
@@ -40,7 +45,8 @@ export default class {
         this.esClient = new Client({
           node: config.elasticLoggingUrl || process.env.ELASTIC_LOGGING_URL,
           pingTimeout: config.pingTimeout || parseInt(process.env.ELASTIC_PING_TIMEOUT) || 2000,
-          requestTimeout: config.requestTimeout || parseInt(process.env.ELASTIC_REQUEST_TIMEOUT) || 2000,
+          requestTimeout: config.requestTimeout || parseInt(process.env.ELASTIC_REQUEST_TIMEOUT) ||
+          2000,
         });
 
         // Transporter
@@ -48,7 +54,8 @@ export default class {
           index: this.indexName,
           client: this.esClient,
           buffering: false,
-          flushInterval: config.flushInterval || parseInt(process.env.ELASTIC_FLUSH_INTERVAL) || 500,
+          flushInterval: config.flushInterval || parseInt(process.env.ELASTIC_FLUSH_INTERVAL) ||
+          500,
         });
         transports.push(esTransport);
       }
@@ -70,10 +77,7 @@ export default class {
      * @param {any} content THe messages to write to stdout
      * @returns {Void}
      */
-    public logger(level: string, content: any): void {
-      // Add the invocationId to the data object
-      const { invocationId } = this;
-
+    public logger(level: string, ...content: any): void {
       // Log
       if (!this.debugInstance[level.toLowerCase()]) {
         this.debugInstance[level.toLowerCase()] = Debug(`${this.serviceName}:${level}`);
@@ -90,14 +94,14 @@ export default class {
         try {
           switch (level.toUpperCase()) {
             case 'ERROR':
-              this.winstonLogger.error(data, { invocationId });
+              this.winstonLogger.error(data, { invocationId: this.invocationId });
               break;
             case 'INFO':
-              this.winstonLogger.info(data, { invocationId });
+              this.winstonLogger.info(data, { invocationId: this.invocationId });
               break;
             case 'DEBUG':
             default:
-              this.winstonLogger.debug(data, { invocationId });
+              this.winstonLogger.debug(data, { invocationId: this.invocationId });
               break;
           }
         } catch (error) {

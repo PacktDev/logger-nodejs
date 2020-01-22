@@ -10,6 +10,16 @@
     },
     "extends": "packt-base",
     "rules": {
+      "import/extensions": [
+        "error",
+        "always",
+        {
+          "ts": "never",
+          "tsx": "never",
+          "js": "never",
+          "jsx": "never"
+        }
+      ],
       "padding-line-between-statements": [
         "error",
         {
