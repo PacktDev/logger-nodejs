@@ -48,42 +48,12 @@ jobs:
       - run:
           name: Lint
           command: npm run lint
-
-  test-unit:
-    docker:
-      - image: circleci/node:12.6
-      - image: docker.elastic.co/elasticsearch/elasticsearch:6.2.4
-        environment:
-        - discovery.type=single-node
-    steps:
-      - load:
-          stage: "dev"
-      - save_cache:
-          key: v1-dependency-cache-{{ checksum "package.json" }}
-          paths:
-            - node_modules
       - run:
           name: Unit
           command: npm run test
       - store_artifacts:
           path: ./coverage/
 
-  test-integration:
-    docker:
-      - image: circleci/node:12.6
-      - image: docker.elastic.co/elasticsearch/elasticsearch:6.2.4
-        environment:
-        - discovery.type=single-node
-    steps:
-      - load:
-          stage: "dev"
-      - save_cache:
-          key: v1-dependency-cache-{{ checksum "package.json" }}
-          paths:
-            - node_modules
-      - run:
-          name: Integration
-          command: npm run integration
 
 workflows:
   version: 2
@@ -91,6 +61,3 @@ workflows:
   build_and_deploy:
     jobs:
       - build
-      - test-unit:
-          requires:
-            - build

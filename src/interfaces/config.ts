@@ -5,4 +5,5 @@ export interface IConfig {
     pingTimeout?: number;
     requestTimeout?: number;
     flushInterval?: number;
+    winstonConsole?: boolean | string;
 }

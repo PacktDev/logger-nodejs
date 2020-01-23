@@ -11,10 +11,11 @@ import Logger from '../src/index';
 const config = {};
 const sandbox = sinon.createSandbox();
 
-const ELASTIC_LOGGING_URL = 'http://localhost:9200/';
+let ELASTIC_LOGGING_URL = 'http://localhost:9200/';
 
 describe('Logger', () => {
   beforeEach(() => {
+    ELASTIC_LOGGING_URL = 'http://localhost:9200/';
     sandbox.reset();
     sandbox.restore();
   });
@@ -33,6 +34,19 @@ describe('Logger', () => {
 
       const date = new Date();
       const logger = new Logger(config);
+      expect((logger as any).indexName).to.eql(`logs-${ELASTIC_LOGGING_SERVICE_NAME}-${date.toISOString().split('T').shift()}`);
+      expect((logger as any).esClient).to.be.instanceOf(Client);
+    });
+
+    it('Logger_constructor_success_with_winstonConsole', () => {
+      const ELASTIC_LOGGING_SERVICE_NAME = uuid();
+      sandbox.stub(process, 'env').value({
+        ELASTIC_LOGGING_SERVICE_NAME,
+        ELASTIC_LOGGING_URL,
+      });
+
+      const date = new Date();
+      const logger = new Logger({ ...config, winstonConsole: true });
       expect((logger as any).indexName).to.eql(`logs-${ELASTIC_LOGGING_SERVICE_NAME}-${date.toISOString().split('T').shift()}`);
       expect((logger as any).esClient).to.be.instanceOf(Client);
     });
@@ -63,6 +77,18 @@ describe('Logger', () => {
       expect((logger as any).esClient).to.be.instanceOf(Client);
       expect(logCalled).to.eql(0);
       expect(errorFunc.callCount).to.be.gte(1);
+    });
+
+    it('Logger_real_success_default', () => {
+      ELASTIC_LOGGING_URL = undefined;
+      const ELASTIC_LOGGING_SERVICE_NAME = 'real-log';
+      sandbox.stub(process, 'env').value({
+        ELASTIC_LOGGING_SERVICE_NAME,
+        ELASTIC_LOGGING_URL,
+      });
+
+      const logger = new Logger(config);
+      logger.logger('', 'Hello World');
     });
 
     it('Logger_logger_success_ERROR', () => {
