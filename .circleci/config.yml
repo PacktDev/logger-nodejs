@@ -1,0 +1,63 @@
+version: 2.1
+
+commands:
+  npmg:
+    description: "Latest version of NPM"
+    steps:
+      - run:
+          name: "Latest version of NPM"
+          command: sudo npm i -g npm
+  npmi:
+    description: "Install node dependencies"
+    steps:
+      - run:
+          name: "Install node dependencies"
+          command: npm i --from-lock-file && npm dedupe
+  load:
+    description: "Configure and build objects for deployment"
+    parameters:
+      stage:
+        type: string
+        default: "prod"
+    steps:
+      - add_ssh_keys:
+          fingerprints:
+          - "4c:3b:c2:b3:71:6a:40:df:7b:b7:c1:4a:d8:f8:a5:24"
+      - npmg
+      - checkout
+      - restore_cache:
+          keys:
+          - v1-dependency-cache-{{ checksum "package.json" }}
+          - v1-dependency-cache-
+      - npmi
+
+jobs:
+  build:
+    docker:
+      - image: circleci/node:12.6
+      - image: docker.elastic.co/elasticsearch/elasticsearch:6.2.4
+        environment:
+        - discovery.type=single-node
+    steps:
+      - load:
+          stage: "dev"
+      - save_cache:
+          key: v1-dependency-cache-{{ checksum "package.json" }}
+          paths:
+            - node_modules
+      - run:
+          name: Lint
+          command: npm run lint
+      - run:
+          name: Unit
+          command: npm run test
+      - store_artifacts:
+          path: ./coverage/
+
+
+workflows:
+  version: 2
+  # The build and deploy workflow
+  build_and_deploy:
+    jobs:
+      - build
