@@ -22,7 +22,7 @@ export default class {
    * Creates a useable instance for logging
    */
   constructor(config: IConfig) {
-    this.serviceName = (config.serviceName || process.env.ELASTIC_LOGGING_SERVICE_NAME || '').trim()
+    this.serviceName = (config.serviceName || process.env.ELASTIC_LOGGING_SERVICE_NAME || '').trim();
     this.winstonConsole = !!process.env.WINSTON_CONSOLE || !!config.winstonConsole;
     this.debugInstance = {};
     this.invocationId = config.invocationId;
@@ -83,31 +83,35 @@ export default class {
    * @param {any} content THe messages to write to stdout
    * @returns {Void}
    */
-  public logger(level: string, ...content: any): void {
+  public logger(level: string, ...content: any[]): void {
     // Log
     if (!this.debugInstance[level.toLowerCase()]) {
       this.debugInstance[level.toLowerCase()] = Debug(`${this.serviceName}:${level}`);
     }
 
     // Correct for single array instance
-    const data = (content.length === 1) ? content[0] : content;
+    const message = (content.length === 1) ? content : content[0];
+    const data = {
+      invocationId: this.invocationId,
+      ...(content.slice(1)),
+    };
 
     // Debug Log
-    this.debugInstance[level.toLowerCase()](data, { invocationId: this.invocationId });
+    this.debugInstance[level.toLowerCase()](message, data);
 
     /* istanbul ignore else */
     if (this.winstonLogger) {
       try {
         switch (level.toUpperCase()) {
           case 'ERROR':
-            this.winstonLogger.error(data, { invocationId: this.invocationId });
+            this.winstonLogger.error(message, data);
             break;
           case 'INFO':
-            this.winstonLogger.info(data, { invocationId: this.invocationId });
+            this.winstonLogger.info(message, data);
             break;
           case 'DEBUG':
           default:
-            this.winstonLogger.debug(data, { invocationId: this.invocationId });
+            this.winstonLogger.debug(message, data);
             break;
         }
       } catch (error) {
@@ -128,24 +132,24 @@ export default class {
    * Helpful wrapper for debug severity
    * @param content
    */
-  public debug(...content: any): void {
-    return this.logger('DEBUG', content);
+  public debug(...content: any[]): void {
+    return this.logger('DEBUG', ...content);
   }
 
   /**
    * Helpful wrapper for info severity
    * @param content
    */
-  public info(...content: any): void {
-    return this.logger('INFO', content);
+  public info(...content: any[]): void {
+    return this.logger('INFO', ...content);
   }
 
   /**
    * Helpful wrapper for error severity
    * @param content
    */
-  public error(...content: any): void {
-    return this.logger('ERROR', content);
+  public error(...content: any[]): void {
+    return this.logger('ERROR', ...content);
   }
 
   /**
